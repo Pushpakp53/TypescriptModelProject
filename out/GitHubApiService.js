@@ -9,20 +9,27 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var request = __importStar(require("request"));
 var User_1 = require("./User");
+var Repo_1 = require("./Repo");
+var OPTIONS = {
+    headers: {
+        'User-Agent': 'request'
+    },
+    json: true
+};
 var GitHubApiService = /** @class */ (function () {
     function GitHubApiService() {
     }
     GitHubApiService.prototype.getUserInfo = function (userName, cb) {
-        var options = {
-            headers: {
-                'User-Agent': 'request'
-            },
-            json: true
-        };
-        request.get('http://api.github.com/users/' + userName, options, function (eror, response, body) {
+        request.get('http://api.github.com/users/' + userName, OPTIONS, function (eror, response, body) {
             var user = new User_1.User(body);
             console.log(user);
             cb(user);
+        });
+    };
+    GitHubApiService.prototype.getRepos = function (userName, cb) {
+        request.get('http://api.github.com/users/' + userName + '/repos', OPTIONS, function (eror, response, body) {
+            var repos = body.map(function (repo) { return new Repo_1.Repo(repo); });
+            cb(repos);
         });
     };
     return GitHubApiService;
