@@ -3,10 +3,16 @@ import { User } from './User';
 import { Repo } from './Repo';
 
 let svc = new GitHubApiService;
-svc.getUserInfo('Pushpakp53', (user: User) => {
-    console.log(user);
+if (process.argv.length < 3){
+    console.log('Please pass the username as an argument.')
+}
+else{
+    let username = process.argv[2];
+svc.getUserInfo(username, (user: User) => {
+    svc.getRepos(username, (repos: Repo[]) => {
+     user.repos = repos;
+     console.log(user);
+    });
 });
 
-svc.getRepos('Pushpakp53', (repos: Repo[]) => {
-    console.log(repos);
-});
+}
